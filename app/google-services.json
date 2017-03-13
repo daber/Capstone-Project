@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "931199971148",
+    "firebase_url": "https://mytummy-dac61.firebaseio.com",
+    "project_id": "mytummy-dac61",
+    "storage_bucket": "mytummy-dac61.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:931199971148:android:4b4e56cfe4ad8abd",
+        "android_client_info": {
+          "package_name": "pl.abitcreative.mytummy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "931199971148-32bj5sg5vh1l177mifvvvbrt6aep802e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "pl.abitcreative.mytummy",
+            "certificate_hash": "f9afff13dada7e72a3d9ef6530a475f05d57ee88"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCMka1-QlPcN8MVQYWyZqY9YpfBvbzUxWc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
