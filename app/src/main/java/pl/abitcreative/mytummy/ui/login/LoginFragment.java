@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
@@ -18,7 +19,13 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.Places;
+import com.google.android.gms.location.places.ui.PlaceAutocomplete;
+import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -34,11 +41,13 @@ import pl.abitcreative.mytummy.R;
 
 public class LoginFragment extends Fragment implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
     private static final int RC_SIGN_IN = 1;
+    private static final int RC_PICK_PLACE = 2 ;
     private static final String TAG = "LOGIN";
     private GoogleApiClient mGoogleApiClient;
     private View mView;
     private View mLoginButton;
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private Button mPickPlaceButton;
 
     @Override
     public void onAttach(Context context) {
@@ -49,6 +58,8 @@ public class LoginFragment extends Fragment implements GoogleApiClient.OnConnect
         mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
                 .enableAutoManage(getActivity(), this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .addApi(Places.GEO_DATA_API)
+                .addApi(Places.PLACE_DETECTION_API)
                 .build();
 
     }
@@ -59,6 +70,9 @@ public class LoginFragment extends Fragment implements GoogleApiClient.OnConnect
         mView = inflater.inflate(R.layout.fragment_login, container, false);
         mLoginButton = mView.findViewById(R.id.sign_in_button);
         mLoginButton.setOnClickListener(this);
+        mPickPlaceButton =(Button) mView.findViewById(R.id.pick_place);
+        mPickPlaceButton.setOnClickListener(this);
+
         return mView;
     }
 
@@ -69,7 +83,29 @@ public class LoginFragment extends Fragment implements GoogleApiClient.OnConnect
 
     @Override
     public void onClick(View v) {
-        signIn();
+        int id = v.getId();
+        if(id == R.id.sign_in_button) {
+            signIn();
+        }
+        if(id== R.id.pick_place){
+            pickPlace();
+        }
+    }
+
+    private void pickPlace() {
+
+
+        try {
+            Intent intent = new PlacePicker.IntentBuilder()
+                    .build(this.getActivity());
+            startActivityForResult(intent, RC_PICK_PLACE);
+        } catch (GooglePlayServicesRepairableException e) {
+            e.printStackTrace();
+        } catch (GooglePlayServicesNotAvailableException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
     private void signIn() {
@@ -90,6 +126,15 @@ public class LoginFragment extends Fragment implements GoogleApiClient.OnConnect
                 Log.d(TAG, "Login failed");
             }
         }
+
+        if(requestCode == RC_PICK_PLACE && resultCode == Activity.RESULT_OK){
+            Place p = PlacePicker.getPlace(getContext(),data);
+            Log.d(TAG,"Picked "+ p.getName());
+        }
+
+
+        Log.d(TAG,"Result code ="+resultCode);
+
 
 
     }
