@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:orientation="vertical"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content">
+
+  <LinearLayout
+      android:id="@+id/not_logged_in"
+      android:visibility="visible"
+      android:orientation="vertical"
+      android:layout_width="wrap_content" android:layout_height="wrap_content"
+      android:gravity="center"
+  >
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+              android:text="You Are not Logged In!"
+    />
+
+  </LinearLayout>
+  <LinearLayout
+      android:id="@+id/logged_in"
+      android:visibility="gone"
+      android:orientation="vertical"
+      android:layout_width="wrap_content" android:layout_height="wrap_content"
+      android:gravity="center"
+  >
+
+  <TextView
+      android:id="@+id/last_meal"
+      android:layout_width="wrap_content" android:layout_height="wrap_content"
+              android:text="Last Meal at..."
+  />
+
+  </LinearLayout>
+
+
+</FrameLayout>
