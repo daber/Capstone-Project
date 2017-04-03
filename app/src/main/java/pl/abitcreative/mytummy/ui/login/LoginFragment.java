@@ -12,8 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
-
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -24,7 +22,6 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
-import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -32,8 +29,8 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
-
 import pl.abitcreative.mytummy.R;
+import pl.abitcreative.mytummy.ui.eatslist.EatsListActivity;
 
 /**
  * Created by daber on 13/03/17.
@@ -134,6 +131,9 @@ public class LoginFragment extends Fragment implements GoogleApiClient.OnConnect
 
 
         Log.d(TAG,"Result code ="+resultCode);
+        getActivity().finish();
+        Intent i = new Intent(getContext(), EatsListActivity.class);
+        startActivity(i);
 
 
 
