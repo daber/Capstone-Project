@@ -1,8 +1,8 @@
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:minWidth="40dp"
+                    android:minWidth="120dp"
                     android:minHeight="40dp"
                     android:updatePeriodMillis="86400000"
-                    android:previewImage="@drawable/places_ic_clear"
+                    android:previewImage="@drawable/widget_image"
                     android:initialLayout="@layout/widget_layout"
                     android:resizeMode="horizontal|vertical"
                     android:widgetCategory="home_screen">

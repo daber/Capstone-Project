@@ -84,12 +84,13 @@ public class EatsDetailsFragment extends Fragment implements LoaderManager.Loade
   public void setEatsEntry(EatsEntry eatsEntry) {
     this.eatsEntry = eatsEntry;
     displayEats();
+
   }
 
   private void startEatsLoader() {
     Bundle b = new Bundle();
     b.putParcelable(EATS_ENTRY_BUNDLE, eatsEntry);
-    getLoaderManager().initLoader(PLACE_LOADER, b, this);
+    getLoaderManager().restartLoader(PLACE_LOADER, b, this);
   }
 
 
@@ -104,7 +105,7 @@ public class EatsDetailsFragment extends Fragment implements LoaderManager.Loade
     if (data != null) {
       eatsRating.setRating(data.place.getRating());
       eatsImage.setImageBitmap(data.bitmap);
-      data.release();
+
     }
 
   }

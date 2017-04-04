@@ -1,18 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:id="@+id/container"
              android:orientation="vertical"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content">
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:background="#FFF"
+
+>
 
   <LinearLayout
       android:id="@+id/not_logged_in"
       android:visibility="visible"
       android:orientation="vertical"
-      android:layout_width="wrap_content" android:layout_height="wrap_content"
+      android:layout_width="match_parent" android:layout_height="match_parent"
       android:gravity="center"
+      tools:visibility="gone"
   >
-    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-              android:text="You Are not Logged In!"
+    <TextView android:layout_width="match_parent" android:layout_height="match_parent"
+              android:text="@string/not_logged_in"
+              android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
+              android:textColor="@color/colorPrimaryDark"
+              android:gravity="center"
     />
 
   </LinearLayout>
@@ -20,15 +29,38 @@
       android:id="@+id/logged_in"
       android:visibility="gone"
       android:orientation="vertical"
-      android:layout_width="wrap_content" android:layout_height="wrap_content"
+      android:layout_width="match_parent" android:layout_height="wrap_content"
       android:gravity="center"
+      tools:visibility="visible"
   >
 
-  <TextView
-      android:id="@+id/last_meal"
-      android:layout_width="wrap_content" android:layout_height="wrap_content"
-              android:text="Last Meal at..."
-  />
+    <TextView
+        android:paddingStart="18dp"
+        android:drawableStart="@drawable/ic_access_time_white_24px"
+        android:id="@+id/eats_time"
+        android:layout_weight="0.2"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
+        android:padding="8dp"
+        tools:text="Test Text"
+        android:textColor="@color/colorPrimaryDark"
+    />
+
+    <TextView
+        android:paddingStart="18dp"
+        android:drawableStart="@drawable/ic_place_white_24px"
+        android:id="@+id/eats_name"
+        android:layout_weight="0.2"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:padding="8dp"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
+        android:textColor="@color/colorPrimaryDark"
+        tools:text="Test Text"
+    />
 
   </LinearLayout>
 

@@ -21,6 +21,7 @@ import com.google.firebase.auth.*;
 import pl.abitcreative.mytummy.BaseActivity;
 import pl.abitcreative.mytummy.R;
 import pl.abitcreative.mytummy.ui.eatslist.EatsListActivity;
+import pl.abitcreative.mytummy.ui.widget.WidgetProvider;
 
 import javax.inject.Inject;
 
@@ -28,7 +29,7 @@ import javax.inject.Inject;
  * Created by daber on 13/03/17.
  */
 
-public class LoginFragment extends Fragment implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
+public class LoginFragment extends Fragment implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener, FirebaseAuth.AuthStateListener {
   private static final int    RC_SIGN_IN    = 1;
   private static final int    RC_PICK_PLACE = 2;
   private static final String TAG           = "LOGIN";
@@ -44,7 +45,8 @@ public class LoginFragment extends Fragment implements GoogleApiClient.OnConnect
     baseActivity.activityComponent.inject(this);
     super.onAttach(context);
 
-    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    FirebaseUser user = mAuth.getCurrentUser();
+    mAuth.addAuthStateListener(this);
     if (user != null) {
       onLoginSuccessfull();
     }
@@ -90,7 +92,7 @@ public class LoginFragment extends Fragment implements GoogleApiClient.OnConnect
         Log.d(TAG, "Login OK");
         GoogleSignInAccount account = result.getSignInAccount();
         firebaseAuthWithGoogle(account);
-        onLoginSuccessfull();
+
       } else {
         Log.d(TAG, "Login failed");
       }
@@ -103,6 +105,7 @@ public class LoginFragment extends Fragment implements GoogleApiClient.OnConnect
     getActivity().finish();
     Intent i = new Intent(getContext(), EatsListActivity.class);
     startActivity(i);
+    WidgetProvider.broadcastNewEntry(getContext());
   }
 
   private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
@@ -119,5 +122,12 @@ public class LoginFragment extends Fragment implements GoogleApiClient.OnConnect
             }
           }
         });
+  }
+
+  @Override
+  public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+    if (firebaseAuth.getCurrentUser() != null) {
+      onLoginSuccessfull();
+    }
   }
 }

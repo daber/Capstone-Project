@@ -16,7 +16,6 @@ import butterknife.ButterKnife;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import pl.abitcreative.mytummy.BaseActivity;
-import pl.abitcreative.mytummy.MyTummyApp;
 import pl.abitcreative.mytummy.R;
 import pl.abitcreative.mytummy.model.EatsEntry;
 
@@ -29,6 +28,8 @@ import java.util.List;
  */
 
 public class EatsListFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<EatsEntry>> {
+  private EatsAdapter adapter;
+
   public interface EatsSelected {
     void onEatsSelected(int position, EatsEntry entry);
   }
@@ -93,13 +94,21 @@ public class EatsListFragment extends Fragment implements LoaderManager.LoaderCa
 
   @Override
   public void onLoadFinished(Loader<List<EatsEntry>> loader, List<EatsEntry> data) {
-    recyclerView.setAdapter(new EatsAdapter(data, listener, dateFormat));
+    adapter = new EatsAdapter(data, listener, dateFormat);
+    recyclerView.setAdapter(adapter);
 
   }
 
   @Override
   public void onLoaderReset(Loader<List<EatsEntry>> loader) {
+    adapter = null;
     recyclerView.setAdapter(null);
+  }
+
+  public void selectPosition(int pos) {
+    if (adapter != null) {
+      adapter.selectItemPos(pos);
+    }
 
   }
 }

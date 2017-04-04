@@ -2,12 +2,10 @@ package pl.abitcreative.mytummy.ui.eatslist;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -16,6 +14,7 @@ import com.google.android.gms.location.places.ui.PlacePicker;
 import pl.abitcreative.mytummy.BaseActivity;
 import pl.abitcreative.mytummy.R;
 import pl.abitcreative.mytummy.model.EatsEntry;
+import pl.abitcreative.mytummy.ui.eatsdetails.EatsDetailsFragment;
 import pl.abitcreative.mytummy.ui.eatsdetails.EatsDetaisActivity;
 
 /**
@@ -25,12 +24,21 @@ import pl.abitcreative.mytummy.ui.eatsdetails.EatsDetaisActivity;
 public class EatsListActivity extends BaseActivity implements GoogleApiClient.OnConnectionFailedListener, EatsListFragment.EatsSelected {
   private static final int RC_PICK_PLACE = 1;
   private AddPlaceAsyncTask task;
+  private boolean isBigScreen = false;
+  private EatsDetailsFragment detailsFragment;
+  private EatsListFragment    listFragment;
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_eats_list);
 
+  }
+
+  @Override
+  protected void onResumeFragments() {
+    super.onResumeFragments();
+    detectBigScreen();
   }
 
   @Override
@@ -78,7 +86,7 @@ public class EatsListActivity extends BaseActivity implements GoogleApiClient.On
 
   private void addEntry(Place place) {
     cancelTask();
-    task = new AddPlaceAsyncTask();
+    task = new AddPlaceAsyncTask(getApplicationContext());
     task.execute(place);
 
   }
@@ -96,11 +104,31 @@ public class EatsListActivity extends BaseActivity implements GoogleApiClient.On
   }
 
 
-
   @Override
   public void onEatsSelected(int position, EatsEntry entry) {
+    if (isBigScreen) {
+      detailsFragment.setEatsEntry(entry);
+      listFragment.selectPosition(position);
+
+
+    } else {
+      launchDetails(entry);
+    }
+  }
+
+  private void launchDetails(EatsEntry entry) {
     Intent i = new Intent(this, EatsDetaisActivity.class);
     i.putExtra(EatsDetaisActivity.EXTRA_EATS_PLACE, entry);
     startActivity(i);
+  }
+
+  private void detectBigScreen() {
+    detailsFragment = (EatsDetailsFragment) getSupportFragmentManager().findFragmentById(R.id.eats_details_fragment);
+    listFragment = (EatsListFragment) getSupportFragmentManager().findFragmentById(R.id.eats_list_fragment);
+    if (detailsFragment != null) {
+      isBigScreen = true;
+    } else {
+      isBigScreen = false;
+    }
   }
 }
