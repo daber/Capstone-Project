@@ -1,6 +1,5 @@
 package pl.abitcreative.mytummy.dependecy;
 
-import android.app.Activity;
 import dagger.Component;
 
 /**
@@ -11,5 +10,7 @@ import dagger.Component;
 @AppScope
 
 public interface AppComponent {
-  void inject(Activity activity);
+
+  ActivityComponent plus(ActivityModule module);
+
 }

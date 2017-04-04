@@ -10,6 +10,10 @@ import pl.abitcreative.mytummy.dependecy.DaggerAppComponent;
  */
 
 public class MyTummyApp extends Application {
+  public AppComponent getAppComponent() {
+    return appComponent;
+  }
+
   protected AppComponent appComponent;
 
   @Override
@@ -17,4 +21,5 @@ public class MyTummyApp extends Application {
     appComponent = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
     super.onCreate();
   }
+
 }

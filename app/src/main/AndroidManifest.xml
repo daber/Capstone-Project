@@ -21,6 +21,7 @@
     </activity>
 
     <activity android:name=".ui.eatslist.EatsListActivity"/>
+    <activity android:name=".ui.eatsdetails.EatsDetaisActivity"/>
 
 
     <receiver android:name=".ui.widget.WidgetProvider">
@@ -39,7 +40,11 @@
 
     <meta-data
         android:name="com.google.android.geo.API_KEY"
-        android:value="AIzaSyBw0qq5G1nUdKXf1whg_--72v9yBPPpvJ4"/>
+        android:value="AIzaSyCxDz1nxmXFYyvJgnYi4PW5QvmMClTdbG4"/>
+
+    <!--<meta-data-->
+        <!--android:name="com.google.android.maps.v2.API_KEY"-->
+        <!--android:value="AIzaSyCxDz1nxmXFYyvJgnYi4PW5QvmMClTdbG4"/>-->
 
   </application>
 

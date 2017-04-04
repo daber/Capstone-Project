@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">MyTummy</string>
+  <string name="add">add</string>
+  <string name="failed_to_connect_to_google_services">Unable to connect to google services</string>
 </resources>

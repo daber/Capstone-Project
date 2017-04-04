@@ -3,10 +3,7 @@ package pl.abitcreative.mytummy.ui.eatslist;
 import android.content.Context;
 import android.os.ConditionVariable;
 import android.support.v4.content.AsyncTaskLoader;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.*;
 import pl.abitcreative.mytummy.model.EatsEntry;
 
 import java.util.ArrayList;
@@ -16,22 +13,32 @@ import java.util.List;
  * Created by mdabrowski on 03/04/17.
  */
 
-public class EatsListLoader extends AsyncTaskLoader<List<EatsEntry>> {
+public class EatsListLoader extends AsyncTaskLoader<List<EatsEntry>> implements ChildEventListener {
 
-  private FirebaseDatabase db;
-  private String           uuid;
+  private final String            path;
+  private final DatabaseReference reference;
+  private       FirebaseDatabase  db;
+  private       String            uuid;
 
   public EatsListLoader(Context context, String uuid) {
     super(context);
     this.uuid = uuid;
     db = FirebaseDatabase.getInstance();
-
+    path = "/" + uuid;
+    reference = db.getReference(path);
   }
 
   @Override
   protected void onStartLoading() {
     super.onStartLoading();
     forceLoad();
+    reference.addChildEventListener(this);
+  }
+
+  @Override
+  protected void onReset() {
+    super.onReset();
+    reference.removeEventListener(this);
   }
 
   @Override
@@ -40,14 +47,14 @@ public class EatsListLoader extends AsyncTaskLoader<List<EatsEntry>> {
     final ConditionVariable var = new ConditionVariable(false);
     final List<EatsEntry> ret = new ArrayList<>();
 
-    String path = "/" + uuid;
-    db.getReference(path).orderByChild("timeStamp").addListenerForSingleValueEvent(new ValueEventListener() {
+
+    db.getReference(path).addListenerForSingleValueEvent(new ValueEventListener() {
       @Override
       public void onDataChange(DataSnapshot dataSnapshot) {
 
         for (DataSnapshot c : dataSnapshot.getChildren()) {
           EatsEntry e = c.getValue(EatsEntry.class);
-          ret.add(e);
+          ret.add(0,e);
         }
         var.open();
       }
@@ -60,6 +67,31 @@ public class EatsListLoader extends AsyncTaskLoader<List<EatsEntry>> {
     var.block();
 
     return ret;
+
+  }
+
+  @Override
+  public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+    forceLoad();
+  }
+
+  @Override
+  public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+    forceLoad();
+  }
+
+  @Override
+  public void onChildRemoved(DataSnapshot dataSnapshot) {
+    forceLoad();
+  }
+
+  @Override
+  public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+    forceLoad();
+  }
+
+  @Override
+  public void onCancelled(DatabaseError databaseError) {
 
   }
 }
