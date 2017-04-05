@@ -69,7 +69,7 @@ public class EatsAdapter extends RecyclerView.Adapter<EatsHolder> {
   }
 
   public void setEatsListener(EatsListFragment.EatsSelected eatsListener) {
-
+    listener = eatsListener;
   }
 
   public void selectItemPos(int position) {
@@ -83,7 +83,7 @@ public class EatsAdapter extends RecyclerView.Adapter<EatsHolder> {
   }
 
   public EatsEntry getDataAtPosition(int pos) {
-    if (pos < entries.size()) {
+    if (pos < entries.size() && pos >= 0) {
       return entries.get(pos);
     }
     return null;

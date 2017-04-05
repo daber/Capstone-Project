@@ -130,6 +130,13 @@ public class EatsListActivity extends BaseActivity implements GoogleApiClient.On
     }
   }
 
+  @Override
+  public void onEatsRemoved(int position, EatsEntry entry) {
+    if(selectedPosition == position){
+      onEatsSelected(-1,null);
+    }
+  }
+
   private void launchDetails(EatsEntry entry) {
     Intent i = new Intent(this, EatsDetaisActivity.class);
     i.putExtra(EatsDetaisActivity.EXTRA_EATS_PLACE, entry);

@@ -1,5 +1,6 @@
 package pl.abitcreative.mytummy.ui.eatsdetails;
 
+import android.animation.Animator;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,6 +10,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RatingBar;
@@ -143,11 +145,33 @@ public class EatsDetailsFragment extends Fragment implements LoaderManager.Loade
   public void onLoadFinished(Loader<EatsDetailsLoader.PlaceAndPicture> loader, EatsDetailsLoader.PlaceAndPicture data) {
     if (data != null) {
       eatsRating.setRating(data.place.getRating());
-      eatsImage.setImageBitmap(data.bitmap);
       showContent();
+      revealImage(data);
+
     } else {
       showEmpty();
     }
+
+  }
+
+  private void revealImage(EatsDetailsLoader.PlaceAndPicture data) {
+    eatsImage.setVisibility(View.GONE);
+    eatsImage.setImageBitmap(data.bitmap);
+    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+
+      int cx = eatsImage.getWidth() / 2;
+      int cy = eatsImage.getHeight() / 2;
+
+      float finalRadius = (float) Math.hypot(cx, cy);
+
+      Animator anim = ViewAnimationUtils.createCircularReveal(eatsImage, cx, cy, 0, finalRadius);
+      eatsImage.setVisibility(View.VISIBLE);
+      anim.start();
+    }else{
+      eatsImage.setVisibility(View.VISIBLE);
+    }
+
+
 
   }
 

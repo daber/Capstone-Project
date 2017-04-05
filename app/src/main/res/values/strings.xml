@@ -5,4 +5,14 @@
   <string name="not_logged_in">Click Here to log-in</string>
   <string name="select_content_to_see_the_detials">Select Content to see the detials</string>
   <string name="click_to_add_entries">Click + to add entries</string>
+  <string name="add_new_lunch_entry">Add new lunch entry</string>
+  <string name="eat_place">Eat place</string>
+  <string name="eat_time">eat time</string>
+  <string name="powered_by_google">powered by google</string>
+  <string name="image_of_a_place">image of a place</string>
+  <string name="eats_rating">eats rating</string>
+  <string name="eats_list">eats list</string>
+  <string name="login_button">Login button</string>
+  <string name="app_logo">app logo</string>
+  <string name="last_meal_was_at">Last Meal was at</string>
 </resources>

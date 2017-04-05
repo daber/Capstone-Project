@@ -39,6 +39,7 @@ public class WidgetProvider extends AppWidgetProvider {
     for (int i : array) {
       RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
       Intent intent = new Intent(context, LoginActivity.class);
+      intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
       PendingIntent pi = PendingIntent.getActivity(context, 0, intent, 0);
       rv.setOnClickPendingIntent(R.id.container, pi);
       if (place != null) {

@@ -46,6 +46,7 @@
         android:layout_gravity="center"
         android:isIndicator="true"
         android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:contentDescription="@string/eats_rating"
     />
 
     <ImageView
@@ -58,13 +59,14 @@
         android:layout_width="match_parent"
         android:gravity="center"
         android:padding="8dp"
+        android:contentDescription="@string/image_of_a_place"
         tools:src='@drawable/ic_place_white_24px'
     />
     <ImageView android:layout_width="match_parent" android:layout_height="wrap_content"
                android:layout_gravity="end"
                android:src="@drawable/powered_by_google_light"
-
                android:layout_margin="4dp"
+               android:contentDescription="@string/powered_by_google"
 
     />
 

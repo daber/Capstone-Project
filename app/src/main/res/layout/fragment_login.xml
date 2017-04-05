@@ -9,12 +9,14 @@
     <ImageView android:layout_width="match_parent" android:layout_height="0dp"
                android:layout_weight="1"
                android:src="@drawable/stomach"
+               android:contentDescription="@string/app_logo"
     />
     <com.google.android.gms.common.SignInButton
         android:id="@+id/sign_in_button"
-        android:layout_width="wrap_content"
+        android:layout_width="240dp"
         android:layout_height="wrap_content"
         android:paddingBottom="16dp"
+        android:contentDescription="@string/login_button"
     />
 
 </LinearLayout>

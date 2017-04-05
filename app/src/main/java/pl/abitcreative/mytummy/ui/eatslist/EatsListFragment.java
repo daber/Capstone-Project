@@ -45,6 +45,8 @@ public class EatsListFragment extends Fragment implements LoaderManager.LoaderCa
 
   public interface EatsSelected {
     void onEatsSelected(int position, EatsEntry entry);
+
+    void onEatsRemoved(int position, EatsEntry entry);
   }
 
   @Inject
@@ -65,14 +67,15 @@ public class EatsListFragment extends Fragment implements LoaderManager.LoaderCa
       int pos = viewHolder.getAdapterPosition();
       EatsEntry entry = data.get(pos);
       deleteEntry(entry);
-
+      if (listener != null) {
+        listener.onEatsRemoved(pos, entry);
+      }
     }
   };
 
   private void deleteEntry(EatsEntry entry) {
     String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
     db.getReference("/" + userId).child(entry.getId()).removeValue();
-
 
   }
 

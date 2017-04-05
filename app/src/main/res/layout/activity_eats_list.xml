@@ -40,6 +40,7 @@
         app:layout_anchorGravity="bottom|end"
         app:layout_anchor="@id/list_container"
         android:layout_margin="16dp"
+        android:contentDescription="@string/add_new_lunch_entry"
 
     />
 
