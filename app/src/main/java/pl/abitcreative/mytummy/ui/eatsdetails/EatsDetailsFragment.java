@@ -70,6 +70,21 @@ public class EatsDetailsFragment extends Fragment implements LoaderManager.Loade
 
   }
 
+  @Override
+  public void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    if (savedInstanceState != null) {
+      EatsEntry entry = savedInstanceState.getParcelable(EATS_ENTRY_BUNDLE);
+      setEatsEntry(entry);
+    }
+  }
+
+  @Override
+  public void onSaveInstanceState(Bundle outState) {
+    super.onSaveInstanceState(outState);
+    outState.putParcelable(EATS_ENTRY_BUNDLE, eatsEntry);
+  }
+
   @Nullable
   @Override
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

@@ -29,9 +29,19 @@ import java.util.List;
  */
 
 public class EatsListFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<EatsEntry>> {
-  private EatsAdapter adapter;
+  private EatsAdapter         adapter;
   private LinearLayoutManager layoutManager;
-  private List<EatsEntry> data;
+  private List<EatsEntry>     data;
+
+  @BindView(R.id.recycler_view)
+  RecyclerView recyclerView;
+  @BindView((R.id.empty))
+  ViewGroup    empty;
+  @BindView((R.id.loading))
+  ViewGroup    loading;
+  private int selectedPositon = -1;
+
+  private static final String SELECTED_POSITION = "SELECTED_POSITION";
 
   public interface EatsSelected {
     void onEatsSelected(int position, EatsEntry entry);
@@ -60,8 +70,8 @@ public class EatsListFragment extends Fragment implements LoaderManager.LoaderCa
   };
 
   private void deleteEntry(EatsEntry entry) {
-      String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-      db.getReference("/"+userId).child(entry.getId()).removeValue();
+    String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+    db.getReference("/" + userId).child(entry.getId()).removeValue();
 
 
   }
@@ -70,8 +80,6 @@ public class EatsListFragment extends Fragment implements LoaderManager.LoaderCa
 
   private EatsSelected listener;
 
-  @BindView(R.id.recycler_view)
-  RecyclerView recyclerView;
 
   @Override
   public void onAttach(Context context) {
@@ -81,6 +89,15 @@ public class EatsListFragment extends Fragment implements LoaderManager.LoaderCa
     }
     BaseActivity baseActivity = (BaseActivity) getContext();
     baseActivity.activityComponent.inject(this);
+  }
+
+
+  @Override
+  public void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    if (savedInstanceState != null) {
+      selectedPositon = savedInstanceState.getInt(SELECTED_POSITION, -1);
+    }
   }
 
   private Loader<List<EatsEntry>> eatsLoader;
@@ -93,7 +110,28 @@ public class EatsListFragment extends Fragment implements LoaderManager.LoaderCa
     layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
     recyclerView.setLayoutManager(layoutManager);
     touchHelper.attachToRecyclerView(recyclerView);
+    ButterKnife.bind(this, v);
+    showEmpty();
     return v;
+  }
+
+  private void showEmpty() {
+    recyclerView.setVisibility(View.GONE);
+    loading.setVisibility(View.GONE);
+    empty.setVisibility(View.VISIBLE);
+  }
+
+
+  private void showLoading() {
+    recyclerView.setVisibility(View.GONE);
+    loading.setVisibility(View.VISIBLE);
+    empty.setVisibility(View.GONE);
+  }
+
+  private void showContent() {
+    recyclerView.setVisibility(View.VISIBLE);
+    loading.setVisibility(View.GONE);
+    empty.setVisibility(View.GONE);
   }
 
   @Override
@@ -112,11 +150,20 @@ public class EatsListFragment extends Fragment implements LoaderManager.LoaderCa
     Bundle b = new Bundle();
     b.putString(USER_ID, FirebaseAuth.getInstance().getCurrentUser().getUid());
     getLoaderManager().initLoader(EATS_LOADER, b, this);
+
   }
+
+  @Override
+  public void onSaveInstanceState(Bundle outState) {
+    super.onSaveInstanceState(outState);
+    outState.putInt(SELECTED_POSITION, selectedPositon);
+  }
+
 
   @Override
   public Loader<List<EatsEntry>> onCreateLoader(int id, Bundle args) {
     Loader<List<EatsEntry>> loader = new EatsListLoader(getContext(), args.getString(USER_ID));
+    showLoading();
     return loader;
   }
 
@@ -124,7 +171,13 @@ public class EatsListFragment extends Fragment implements LoaderManager.LoaderCa
   public void onLoadFinished(Loader<List<EatsEntry>> loader, List<EatsEntry> data) {
     adapter = new EatsAdapter(data, listener, dateFormat);
     this.data = data;
+    adapter.selectItemPos(selectedPositon);
     recyclerView.setAdapter(adapter);
+    if (data == null || data.isEmpty()) {
+      showEmpty();
+    } else {
+      showContent();
+    }
 
   }
 
@@ -135,6 +188,7 @@ public class EatsListFragment extends Fragment implements LoaderManager.LoaderCa
   }
 
   public void selectPosition(int pos) {
+    selectedPositon = pos;
     if (adapter != null) {
       adapter.selectItemPos(pos);
     }

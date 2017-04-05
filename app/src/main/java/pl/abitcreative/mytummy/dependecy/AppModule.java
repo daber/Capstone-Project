@@ -1,8 +1,13 @@
 package pl.abitcreative.mytummy.dependecy;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.places.Places;
 import dagger.Module;
 import dagger.Provides;
 import pl.abitcreative.mytummy.MyTummyApp;
+import pl.abitcreative.mytummy.R;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -27,8 +32,26 @@ public class AppModule {
     return app;
   }
 
+  @Provides
+  @AppScope
+  public GoogleApiClient provideGoogleApi(GoogleSignInOptions gso) {
+    GoogleApiClient client = new GoogleApiClient.Builder(app)
+        .addApi(Places.GEO_DATA_API)
+        .addApi(Places.PLACE_DETECTION_API)
+        .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+        .build();
+    client.connect();
+    return client;
+  }
 
+  @Provides
+  @AppScope
+  public GoogleSignInOptions provideGoogleSignInOptions() {
+    return new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        .requestEmail().requestIdToken(app.getString(R.string.default_web_client_id))
+        .build();
 
+  }
 
 
   @Provides

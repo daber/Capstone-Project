@@ -19,9 +19,10 @@ public class BaseActivity extends AppCompatActivity implements GoogleApiClient.O
   public ActivityComponent activityComponent;
 
   protected void onCreate(@Nullable Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
     MyTummyApp app = (MyTummyApp) getApplicationContext();
     activityComponent = app.getAppComponent().plus(new ActivityModule(this, this));
+    super.onCreate(savedInstanceState);
+
   }
 
   @Override

@@ -46,11 +46,10 @@ public class LoginFragment extends Fragment implements GoogleApiClient.OnConnect
     super.onAttach(context);
 
 
-
-
   }
 
-  private void checkLogin() {FirebaseUser user = mAuth.getCurrentUser();
+  private void checkLogin() {
+    FirebaseUser user = mAuth.getCurrentUser();
     mAuth.addAuthStateListener(this);
     if (user != null) {
       onLoginSuccessfull();
@@ -131,7 +130,9 @@ public class LoginFragment extends Fragment implements GoogleApiClient.OnConnect
   @Override
   public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
     if (firebaseAuth.getCurrentUser() != null) {
-      onLoginSuccessfull();
+      if (getActivity() != null) {
+        onLoginSuccessfull();
+      }
     }
   }
 }

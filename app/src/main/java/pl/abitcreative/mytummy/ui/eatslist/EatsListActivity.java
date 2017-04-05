@@ -26,7 +26,8 @@ import pl.abitcreative.mytummy.ui.eatsdetails.EatsDetaisActivity;
  */
 
 public class EatsListActivity extends BaseActivity implements GoogleApiClient.OnConnectionFailedListener, EatsListFragment.EatsSelected {
-  private static final int RC_PICK_PLACE = 1;
+  private static final int    RC_PICK_PLACE    = 1;
+
   private AddPlaceAsyncTask task;
   private boolean isBigScreen = false;
   private EatsDetailsFragment detailsFragment;
@@ -34,18 +35,22 @@ public class EatsListActivity extends BaseActivity implements GoogleApiClient.On
 
   @BindView(R.id.toolbar)
   Toolbar toolbar;
+  private int selectedPosition;
+
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_eats_list);
     ButterKnife.bind(this);
     setSupportActionBar(toolbar);
+
   }
 
   @Override
   protected void onResumeFragments() {
     super.onResumeFragments();
     detectBigScreen();
+
   }
 
   @Override
@@ -114,6 +119,7 @@ public class EatsListActivity extends BaseActivity implements GoogleApiClient.On
 
   @Override
   public void onEatsSelected(int position, EatsEntry entry) {
+    selectedPosition = position;
     if (isBigScreen) {
       detailsFragment.setEatsEntry(entry);
       listFragment.selectPosition(position);
