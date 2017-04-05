@@ -45,13 +45,16 @@ public class LoginFragment extends Fragment implements GoogleApiClient.OnConnect
     baseActivity.activityComponent.inject(this);
     super.onAttach(context);
 
-    FirebaseUser user = mAuth.getCurrentUser();
+
+
+
+  }
+
+  private void checkLogin() {FirebaseUser user = mAuth.getCurrentUser();
     mAuth.addAuthStateListener(this);
     if (user != null) {
       onLoginSuccessfull();
     }
-
-
   }
 
   @Nullable
@@ -60,7 +63,7 @@ public class LoginFragment extends Fragment implements GoogleApiClient.OnConnect
     mView = inflater.inflate(R.layout.fragment_login, container, false);
     mLoginButton = mView.findViewById(R.id.sign_in_button);
     mLoginButton.setOnClickListener(this);
-
+    checkLogin();
     return mView;
   }
 
