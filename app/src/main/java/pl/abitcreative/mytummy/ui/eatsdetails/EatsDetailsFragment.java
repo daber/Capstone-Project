@@ -45,6 +45,15 @@ public class EatsDetailsFragment extends Fragment implements LoaderManager.Loade
   @BindView(R.id.eats_image)
   ImageView eatsImage;
 
+  @BindView(R.id.content)
+  ViewGroup content;
+  @BindView(R.id.empty)
+  ViewGroup empty;
+
+  @BindView(R.id.loading)
+  ViewGroup loading;
+
+
   @Inject
   GoogleApiClient client;
 
@@ -73,10 +82,12 @@ public class EatsDetailsFragment extends Fragment implements LoaderManager.Loade
 
   private void displayEats() {
     if (getView() == null || eatsEntry == null) {
+      showEmpty();
       return;
     }
     eatsTime.setText(dateFormat.format(new Date(eatsEntry.getTimeStamp())));
     eatsName.setText(eatsEntry.getPlaceName());
+
     startEatsLoader();
 
   }
@@ -93,26 +104,46 @@ public class EatsDetailsFragment extends Fragment implements LoaderManager.Loade
     getLoaderManager().restartLoader(PLACE_LOADER, b, this);
   }
 
-
   @Override
   public Loader<EatsDetailsLoader.PlaceAndPicture> onCreateLoader(int id, Bundle args) {
     EatsEntry entry = args.getParcelable(EATS_ENTRY_BUNDLE);
     return new EatsDetailsLoader(getContext(), client, entry);
   }
 
+
   @Override
   public void onLoadFinished(Loader<EatsDetailsLoader.PlaceAndPicture> loader, EatsDetailsLoader.PlaceAndPicture data) {
     if (data != null) {
       eatsRating.setRating(data.place.getRating());
       eatsImage.setImageBitmap(data.bitmap);
-
+      showContent();
+    } else {
+      showEmpty();
     }
 
   }
 
   @Override
   public void onLoaderReset(Loader<EatsDetailsLoader.PlaceAndPicture> loader) {
+    showLoading();
+  }
 
+  private void showLoading() {
+    loading.setVisibility(View.VISIBLE);
+    empty.setVisibility(View.GONE);
+    content.setVisibility(View.GONE);
+  }
+
+  private void showEmpty() {
+    empty.setVisibility(View.VISIBLE);
+    loading.setVisibility(View.GONE);
+    content.setVisibility(View.GONE);
+  }
+
+  private void showContent() {
+    empty.setVisibility(View.GONE);
+    loading.setVisibility(View.GONE);
+    content.setVisibility(View.VISIBLE);
   }
 
   @Override

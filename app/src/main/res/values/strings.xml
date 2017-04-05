@@ -3,4 +3,5 @@
   <string name="add">add</string>
   <string name="failed_to_connect_to_google_services">Unable to connect to google services</string>
   <string name="not_logged_in">Click Here to log-in</string>
+  <string name="select_content_to_see_the_detials">Select Content to see the detials</string>
 </resources>
