@@ -118,6 +118,7 @@ public class EatsDetailsFragment extends Fragment implements LoaderManager.Loade
 
   @Override
   public Loader<EatsDetailsLoader.PlaceAndPicture> onCreateLoader(int id, Bundle args) {
+    showLoading();
     EatsEntry entry = args.getParcelable(EATS_ENTRY_BUNDLE);
     return new EatsDetailsLoader(getContext(), client, entry);
   }

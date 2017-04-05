@@ -104,6 +104,7 @@ public class LoginFragment extends Fragment implements GoogleApiClient.OnConnect
   private void onLoginSuccessfull() {
     getActivity().finish();
     Intent i = new Intent(getContext(), EatsListActivity.class);
+    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
     startActivity(i);
     WidgetProvider.broadcastNewEntry(getContext());
   }

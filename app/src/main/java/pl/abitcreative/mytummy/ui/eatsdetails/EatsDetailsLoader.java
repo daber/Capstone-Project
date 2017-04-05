@@ -19,11 +19,14 @@ public class EatsDetailsLoader extends AsyncTaskLoader<EatsDetailsLoader.PlaceAn
     private PlacePhotoMetadataBuffer photoBuffer;
     private PlaceBuffer              placeBuffer;
 
+
     public void release() {
       photoBuffer.release();
       placeBuffer.release();
     }
   }
+
+  private PlaceAndPicture result;
 
   private final GoogleApiClient client;
   private       EatsEntry       eatsEntry;
@@ -64,6 +67,7 @@ public class EatsDetailsLoader extends AsyncTaskLoader<EatsDetailsLoader.PlaceAn
 
       placeAndPicture.place = place;
       placeAndPicture.bitmap = b;
+      result = placeAndPicture;
       return placeAndPicture;
 
     }
@@ -72,5 +76,12 @@ public class EatsDetailsLoader extends AsyncTaskLoader<EatsDetailsLoader.PlaceAn
     return null;
   }
 
-
+  @Override
+  protected void onReset() {
+    super.onReset();
+    if (result != null) {
+      result.release();
+      result = null;
+    }
+  }
 }

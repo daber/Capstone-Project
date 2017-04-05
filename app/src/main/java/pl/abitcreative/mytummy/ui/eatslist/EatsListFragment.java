@@ -8,6 +8,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,8 @@ import java.util.List;
 
 public class EatsListFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<EatsEntry>> {
   private EatsAdapter adapter;
+  private LinearLayoutManager layoutManager;
+  private List<EatsEntry> data;
 
   public interface EatsSelected {
     void onEatsSelected(int position, EatsEntry entry);
@@ -40,6 +43,30 @@ public class EatsListFragment extends Fragment implements LoaderManager.LoaderCa
   private static final String           USER_ID     = "USER_ID";
   private static final int              EATS_LOADER = 1;
   private              FirebaseDatabase db          = FirebaseDatabase.getInstance();
+
+  private ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+    @Override
+    public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+      return false;
+    }
+
+    @Override
+    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+      int pos = viewHolder.getAdapterPosition();
+      EatsEntry entry = data.get(pos);
+      deleteEntry(entry);
+
+    }
+  };
+
+  private void deleteEntry(EatsEntry entry) {
+      String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+      db.getReference("/"+userId).child(entry.getId()).removeValue();
+
+
+  }
+
+  private ItemTouchHelper touchHelper = new ItemTouchHelper(simpleCallback);
 
   private EatsSelected listener;
 
@@ -63,8 +90,9 @@ public class EatsListFragment extends Fragment implements LoaderManager.LoaderCa
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
     View v = inflater.inflate(R.layout.fragment_eats_list, container, false);
     ButterKnife.bind(this, v);
-
-    recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+    layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+    recyclerView.setLayoutManager(layoutManager);
+    touchHelper.attachToRecyclerView(recyclerView);
     return v;
   }
 
@@ -95,6 +123,7 @@ public class EatsListFragment extends Fragment implements LoaderManager.LoaderCa
   @Override
   public void onLoadFinished(Loader<List<EatsEntry>> loader, List<EatsEntry> data) {
     adapter = new EatsAdapter(data, listener, dateFormat);
+    this.data = data;
     recyclerView.setAdapter(adapter);
 
   }

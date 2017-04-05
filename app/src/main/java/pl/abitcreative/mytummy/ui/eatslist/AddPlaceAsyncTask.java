@@ -9,6 +9,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import pl.abitcreative.mytummy.model.EatsEntry;
 import pl.abitcreative.mytummy.ui.widget.WidgetProvider;
@@ -42,7 +43,10 @@ public class AddPlaceAsyncTask extends AsyncTask<Place, Void, Boolean> implement
     entry.setTimeStamp(new Date().getTime());
 
 
-    db.getReference("/" + currentUser.getUid()).push().setValue(entry).addOnSuccessListener(this).addOnFailureListener(this);
+    DatabaseReference pushed = db.getReference("/" + currentUser.getUid()).push();
+    String key = pushed.getKey();
+    entry.setId(key);
+    pushed.setValue(entry).addOnSuccessListener(this).addOnFailureListener(this);
     condition.block();
 
     WidgetProvider.broadcastNewEntry(context);

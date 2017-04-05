@@ -22,7 +22,7 @@ public class EatsAdapter extends RecyclerView.Adapter<EatsHolder> {
 
   private int                           selectedItem = NO_SELECTION;
   private EatsListFragment.EatsSelected listener     = null;
-  private DateFormat                    dateFormat;
+  private DateFormat dateFormat;
 
   private List<EatsEntry> entries;
   private Context         context;
@@ -80,6 +80,13 @@ public class EatsAdapter extends RecyclerView.Adapter<EatsHolder> {
     if (position != NO_SELECTION) {
       notifyItemChanged(selectedItem);
     }
+  }
+
+  public EatsEntry getDataAtPosition(int pos) {
+    if (pos < entries.size()) {
+      return entries.get(pos);
+    }
+    return null;
   }
 
   public int getSelectedPosition() {

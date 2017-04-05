@@ -7,6 +7,7 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import pl.abitcreative.mytummy.R;
+import pl.abitcreative.mytummy.model.EatsEntry;
 
 /**
  * Created by mdabrowski on 03/04/17.
@@ -20,6 +21,7 @@ class EatsHolder extends RecyclerView.ViewHolder {
 
   @BindView(R.id.container)
   LinearLayout container;
+  public EatsEntry entry;
 
   public EatsHolder(View itemView) {
     super(itemView);
