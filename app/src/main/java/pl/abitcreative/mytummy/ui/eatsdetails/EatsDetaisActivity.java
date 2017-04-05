@@ -20,7 +20,8 @@ public class EatsDetaisActivity extends BaseActivity {
     super.onCreate(savedInstanceState);
     eatsEntry = getIntent().getParcelableExtra(EXTRA_EATS_PLACE);
     setContentView(R.layout.activity_details);
-    detailsFragment = (EatsDetailsFragment) getSupportFragmentManager().findFragmentById(R.id.details_fragment);
+    detailsFragment = new EatsDetailsFragment();
     detailsFragment.setEatsEntry(eatsEntry);
+    getSupportFragmentManager().beginTransaction().add(R.id.details_fragment,detailsFragment).commit();
   }
 }

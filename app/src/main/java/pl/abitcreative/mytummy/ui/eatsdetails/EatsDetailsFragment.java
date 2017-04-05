@@ -75,13 +75,25 @@ public class EatsDetailsFragment extends Fragment implements LoaderManager.Loade
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
     View v = inflater.inflate(R.layout.fragment_eats_detail, container, false);
     ButterKnife.bind(this, v);
-    displayEats();
+    if (eatsEntry != null) {
+      showContent();
+    }
 
     return v;
   }
 
+  @Override
+  public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
+    displayEats();
+  }
+
   private void displayEats() {
-    if (getView() == null || eatsEntry == null) {
+    if (getView() == null) {
+
+      return;
+    }
+    if (eatsEntry == null) {
       showEmpty();
       return;
     }
