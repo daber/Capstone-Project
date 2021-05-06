@@ -3,11 +3,6 @@ package pl.abitcreative.mytummy.ui.eatsdetails;
 import android.animation.Animator;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewAnimationUtils;
@@ -16,12 +11,18 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.Loader;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import pl.abitcreative.mytummy.BaseActivity;
 import pl.abitcreative.mytummy.R;
+import pl.abitcreative.mytummy.databinding.FragmentEatsDetailBinding;
 import pl.abitcreative.mytummy.model.EatsEntry;
 
 import javax.inject.Inject;
@@ -36,25 +37,8 @@ public class EatsDetailsFragment extends Fragment implements LoaderManager.Loade
   private static final int    PLACE_LOADER      = 1;
   private static final String EATS_ENTRY_BUNDLE = "EATS_ENTRY";
 
-  @BindView(R.id.eats_time)
-  TextView eatsTime;
-  @BindView(R.id.eats_name)
-  TextView eatsName;
 
-  @BindView(R.id.eats_rating)
-  RatingBar eatsRating;
-
-  @BindView(R.id.eats_image)
-  ImageView eatsImage;
-
-  @BindView(R.id.content)
-  ViewGroup content;
-  @BindView(R.id.empty)
-  ViewGroup empty;
-
-  @BindView(R.id.loading)
-  ViewGroup loading;
-
+  FragmentEatsDetailBinding binding;
 
   @Inject
   GoogleApiClient client;
@@ -90,13 +74,12 @@ public class EatsDetailsFragment extends Fragment implements LoaderManager.Loade
   @Nullable
   @Override
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-    View v = inflater.inflate(R.layout.fragment_eats_detail, container, false);
-    ButterKnife.bind(this, v);
+    binding = FragmentEatsDetailBinding.inflate(inflater);
     if (eatsEntry != null) {
       showContent();
     }
 
-    return v;
+    return binding.getRoot();
   }
 
   @Override
@@ -114,8 +97,8 @@ public class EatsDetailsFragment extends Fragment implements LoaderManager.Loade
       showEmpty();
       return;
     }
-    eatsTime.setText(dateFormat.format(new Date(eatsEntry.getTimeStamp())));
-    eatsName.setText(eatsEntry.getPlaceName());
+    binding.eatsTime.setText(dateFormat.format(new Date(eatsEntry.getTimeStamp())));
+    binding.eatsName.setText(eatsEntry.getPlaceName());
 
     startEatsLoader();
 
@@ -144,7 +127,7 @@ public class EatsDetailsFragment extends Fragment implements LoaderManager.Loade
   @Override
   public void onLoadFinished(Loader<EatsDetailsLoader.PlaceAndPicture> loader, EatsDetailsLoader.PlaceAndPicture data) {
     if (data != null) {
-      eatsRating.setRating(data.place.getRating());
+      binding.eatsRating.setRating(data.place.getRating());
       showContent();
       revealImage(data);
 
@@ -155,20 +138,20 @@ public class EatsDetailsFragment extends Fragment implements LoaderManager.Loade
   }
 
   private void revealImage(EatsDetailsLoader.PlaceAndPicture data) {
-    eatsImage.setVisibility(View.GONE);
-    eatsImage.setImageBitmap(data.bitmap);
+    binding.eatsImage.setVisibility(View.GONE);
+    binding.eatsImage.setImageBitmap(data.bitmap);
     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
 
-      int cx = eatsImage.getWidth() / 2;
-      int cy = eatsImage.getHeight() / 2;
+      int cx = binding.eatsImage.getWidth() / 2;
+      int cy = binding.eatsImage.getHeight() / 2;
 
       float finalRadius = (float) Math.hypot(cx, cy);
 
-      Animator anim = ViewAnimationUtils.createCircularReveal(eatsImage, cx, cy, 0, finalRadius);
-      eatsImage.setVisibility(View.VISIBLE);
+      Animator anim = ViewAnimationUtils.createCircularReveal(binding.eatsImage, cx, cy, 0, finalRadius);
+      binding.eatsImage.setVisibility(View.VISIBLE);
       anim.start();
     }else{
-      eatsImage.setVisibility(View.VISIBLE);
+      binding.eatsImage.setVisibility(View.VISIBLE);
     }
 
 
@@ -181,21 +164,21 @@ public class EatsDetailsFragment extends Fragment implements LoaderManager.Loade
   }
 
   private void showLoading() {
-    loading.setVisibility(View.VISIBLE);
-    empty.setVisibility(View.GONE);
-    content.setVisibility(View.GONE);
+    binding.loading.setVisibility(View.VISIBLE);
+    binding.empty.setVisibility(View.GONE);
+    binding.content.setVisibility(View.GONE);
   }
 
   private void showEmpty() {
-    empty.setVisibility(View.VISIBLE);
-    loading.setVisibility(View.GONE);
-    content.setVisibility(View.GONE);
+    binding.empty.setVisibility(View.VISIBLE);
+    binding.loading.setVisibility(View.GONE);
+    binding.content.setVisibility(View.GONE);
   }
 
   private void showContent() {
-    empty.setVisibility(View.GONE);
-    loading.setVisibility(View.GONE);
-    content.setVisibility(View.VISIBLE);
+    binding.empty.setVisibility(View.GONE);
+    binding.loading.setVisibility(View.GONE);
+    binding.content.setVisibility(View.VISIBLE);
   }
 
   @Override

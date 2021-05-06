@@ -2,7 +2,9 @@ package pl.abitcreative.mytummy.ui.eatsdetails;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.support.v4.content.AsyncTaskLoader;
+
+import androidx.loader.content.AsyncTaskLoader;
+
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.*;
 import pl.abitcreative.mytummy.model.EatsEntry;

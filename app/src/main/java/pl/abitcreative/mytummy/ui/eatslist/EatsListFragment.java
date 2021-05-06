@@ -2,18 +2,19 @@ package pl.abitcreative.mytummy.ui.eatslist;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.Loader;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import pl.abitcreative.mytummy.BaseActivity;
@@ -23,6 +24,7 @@ import pl.abitcreative.mytummy.model.EatsEntry;
 import javax.inject.Inject;
 import java.text.DateFormat;
 import java.util.List;
+import pl.abitcreative.mytummy.databinding.FragmentEatsListBinding;
 
 /**
  * Created by mdabrowski on 03/04/17.
@@ -32,13 +34,13 @@ public class EatsListFragment extends Fragment implements LoaderManager.LoaderCa
   private EatsAdapter         adapter;
   private LinearLayoutManager layoutManager;
   private List<EatsEntry>     data;
-
-  @BindView(R.id.recycler_view)
-  RecyclerView recyclerView;
-  @BindView((R.id.empty))
-  ViewGroup    empty;
-  @BindView((R.id.loading))
-  ViewGroup    loading;
+  FragmentEatsListBinding binding;
+//  @BindView(R.id.recycler_view)
+//  RecyclerView recyclerView;
+//  @BindView((R.id.empty))
+//  ViewGroup    empty;
+//  @BindView((R.id.loading))
+//  ViewGroup    loading;
   private int selectedPositon = -1;
 
   private static final String SELECTED_POSITION = "SELECTED_POSITION";
@@ -108,33 +110,34 @@ public class EatsListFragment extends Fragment implements LoaderManager.LoaderCa
   @Nullable
   @Override
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-    View v = inflater.inflate(R.layout.fragment_eats_list, container, false);
-    ButterKnife.bind(this, v);
+    binding = FragmentEatsListBinding.inflate(inflater);
+//    View v = inflater.inflate(R.layout.fragment_eats_list, container, false);
+//    ButterKnife.bind(this, v);
     layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-    recyclerView.setLayoutManager(layoutManager);
-    touchHelper.attachToRecyclerView(recyclerView);
-    ButterKnife.bind(this, v);
+    binding.recyclerView.setLayoutManager(layoutManager);
+    touchHelper.attachToRecyclerView(binding.recyclerView);
+//    ButterKnife.bind(this, v);
     showEmpty();
-    return v;
+    return binding.getRoot();
   }
 
   private void showEmpty() {
-    recyclerView.setVisibility(View.GONE);
-    loading.setVisibility(View.GONE);
-    empty.setVisibility(View.VISIBLE);
+    binding.recyclerView.setVisibility(View.GONE);
+    binding.loading.setVisibility(View.GONE);
+    binding.empty.setVisibility(View.VISIBLE);
   }
 
 
   private void showLoading() {
-    recyclerView.setVisibility(View.GONE);
-    loading.setVisibility(View.VISIBLE);
-    empty.setVisibility(View.GONE);
+    binding.recyclerView.setVisibility(View.GONE);
+    binding.loading.setVisibility(View.VISIBLE);
+    binding.empty.setVisibility(View.GONE);
   }
 
   private void showContent() {
-    recyclerView.setVisibility(View.VISIBLE);
-    loading.setVisibility(View.GONE);
-    empty.setVisibility(View.GONE);
+    binding.recyclerView.setVisibility(View.VISIBLE);
+    binding.loading.setVisibility(View.GONE);
+    binding.empty.setVisibility(View.GONE);
   }
 
   @Override
@@ -175,7 +178,7 @@ public class EatsListFragment extends Fragment implements LoaderManager.LoaderCa
     adapter = new EatsAdapter(data, listener, dateFormat);
     this.data = data;
     adapter.selectItemPos(selectedPositon);
-    recyclerView.setAdapter(adapter);
+    binding.recyclerView.setAdapter(adapter);
     if (data == null || data.isEmpty()) {
       showEmpty();
     } else {
@@ -187,7 +190,7 @@ public class EatsListFragment extends Fragment implements LoaderManager.LoaderCa
   @Override
   public void onLoaderReset(Loader<List<EatsEntry>> loader) {
     adapter = null;
-    recyclerView.setAdapter(null);
+    binding.recyclerView.setAdapter(null);
   }
 
   public void selectPosition(int pos) {

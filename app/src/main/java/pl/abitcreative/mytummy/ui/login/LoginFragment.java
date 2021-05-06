@@ -3,13 +3,15 @@ package pl.abitcreative.mytummy.ui.login;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
@@ -20,6 +22,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.*;
 import pl.abitcreative.mytummy.BaseActivity;
 import pl.abitcreative.mytummy.R;
+import pl.abitcreative.mytummy.databinding.FragmentLoginBinding;
 import pl.abitcreative.mytummy.ui.eatslist.EatsListActivity;
 import pl.abitcreative.mytummy.ui.widget.WidgetProvider;
 
@@ -35,8 +38,7 @@ public class LoginFragment extends Fragment implements GoogleApiClient.OnConnect
   private static final String TAG           = "LOGIN";
   @Inject
   GoogleApiClient mGoogleApiClient;
-  private View mView;
-  private View mLoginButton;
+  private FragmentLoginBinding binding;
   private FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
   @Override
@@ -59,11 +61,12 @@ public class LoginFragment extends Fragment implements GoogleApiClient.OnConnect
   @Nullable
   @Override
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-    mView = inflater.inflate(R.layout.fragment_login, container, false);
-    mLoginButton = mView.findViewById(R.id.sign_in_button);
-    mLoginButton.setOnClickListener(this);
+    binding = FragmentLoginBinding.inflate(inflater);
+
+    binding.signInButton.findViewById(R.id.sign_in_button);
+    binding.signInButton.setOnClickListener(this);
     checkLogin();
-    return mView;
+    return binding.getRoot();
   }
 
   @Override

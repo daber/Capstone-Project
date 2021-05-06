@@ -3,7 +3,9 @@ package pl.abitcreative.mytummy.ui.eatslist;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.ConditionVariable;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
+
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;

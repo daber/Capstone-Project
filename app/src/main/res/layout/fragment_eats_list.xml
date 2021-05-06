@@ -5,14 +5,14 @@
              android:layout_height="match_parent"
 >
 
-  <android.support.v7.widget.RecyclerView
+  <androidx.recyclerview.widget.RecyclerView
       android:visibility="gone"
       android:id="@+id/recycler_view"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:contentDescription="@string/eats_list"
   >
-  </android.support.v7.widget.RecyclerView>
+  </androidx.recyclerview.widget.RecyclerView>
   <FrameLayout
       android:id="@+id/empty"
       android:visibility="visible"

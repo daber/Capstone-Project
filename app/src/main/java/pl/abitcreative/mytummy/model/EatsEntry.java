@@ -2,7 +2,8 @@ package pl.abitcreative.mytummy.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.Keep;
+
+import androidx.annotation.Keep;
 
 /**
  * Created by mdabrowski on 03/04/17.

@@ -1,7 +1,9 @@
 package pl.abitcreative.mytummy.ui.login;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+
+import androidx.annotation.Nullable;
+
 import pl.abitcreative.mytummy.BaseActivity;
 import pl.abitcreative.mytummy.R;
 

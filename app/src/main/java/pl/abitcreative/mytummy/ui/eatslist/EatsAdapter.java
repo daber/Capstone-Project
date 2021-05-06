@@ -2,11 +2,14 @@ package pl.abitcreative.mytummy.ui.eatslist;
 
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.recyclerview.widget.RecyclerView;
+
 import pl.abitcreative.mytummy.R;
+import pl.abitcreative.mytummy.databinding.EatsListItemBinding;
 import pl.abitcreative.mytummy.model.EatsEntry;
 
 import java.text.DateFormat;
@@ -28,6 +31,7 @@ public class EatsAdapter extends RecyclerView.Adapter<EatsHolder> {
   private Context         context;
   private ColorDrawable   selectionColor;
   private ColorDrawable   neutralColor;
+  private EatsListItemBinding binding;
 
   public EatsAdapter(List<EatsEntry> eatsEntries, EatsListFragment.EatsSelected listener, DateFormat dateFormat) {
     this.dateFormat = dateFormat;
@@ -39,11 +43,11 @@ public class EatsAdapter extends RecyclerView.Adapter<EatsHolder> {
   public EatsHolder onCreateViewHolder(ViewGroup parent, int viewType) {
     context = parent.getContext();
     LayoutInflater inflater = LayoutInflater.from(context);
-    View v = inflater.inflate(R.layout.eats_list_item, parent, false);
+    binding = EatsListItemBinding.inflate(inflater);
     selectionColor = new ColorDrawable(context.getResources().getColor(R.color.colorPrimary));
     selectionColor.setAlpha(255 / 2);
     neutralColor = new ColorDrawable(context.getResources().getColor(android.R.color.white));
-    return new EatsHolder(v);
+    return new EatsHolder(binding);
   }
 
   @Override
@@ -51,14 +55,14 @@ public class EatsAdapter extends RecyclerView.Adapter<EatsHolder> {
 
     EatsEntry entry = entries.get(position);
     if (selectedItem == position) {
-      holder.container.setBackground(selectionColor);
+      holder.binding.container.setBackground(selectionColor);
     } else {
-      holder.container.setBackground(neutralColor);
+      holder.binding.container.setBackground(neutralColor);
     }
 
-    holder.eatsName.setText(entry.getPlaceName());
-    holder.datetime.setText(dateFormat.format(new Date(entry.getTimeStamp())));
-    holder.container.setOnClickListener(new View.OnClickListener() {
+    holder.binding.eatsName.setText(entry.getPlaceName());
+    holder.binding.eatsTime.setText(dateFormat.format(new Date(entry.getTimeStamp())));
+    holder.binding.eatsName.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
         if (listener != null) {

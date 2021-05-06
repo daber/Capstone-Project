@@ -3,7 +3,9 @@ package pl.abitcreative.mytummy.ui.widget;
 import android.app.IntentService;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
-import android.support.annotation.Nullable;
+
+import androidx.annotation.Nullable;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.*;
 import pl.abitcreative.mytummy.MyTummyApp;
