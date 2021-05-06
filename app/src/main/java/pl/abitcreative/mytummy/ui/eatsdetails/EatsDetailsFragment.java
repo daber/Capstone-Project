@@ -20,6 +20,8 @@ import androidx.loader.content.Loader;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.libraries.places.api.net.PlacesClient;
+
 import pl.abitcreative.mytummy.BaseActivity;
 import pl.abitcreative.mytummy.R;
 import pl.abitcreative.mytummy.databinding.FragmentEatsDetailBinding;
@@ -41,7 +43,7 @@ public class EatsDetailsFragment extends Fragment implements LoaderManager.Loade
   FragmentEatsDetailBinding binding;
 
   @Inject
-  GoogleApiClient client;
+  PlacesClient client;
 
   private EatsEntry eatsEntry;
   @Inject
@@ -74,7 +76,7 @@ public class EatsDetailsFragment extends Fragment implements LoaderManager.Loade
   @Nullable
   @Override
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-    binding = FragmentEatsDetailBinding.inflate(inflater);
+    binding = FragmentEatsDetailBinding.inflate(inflater,container,false);
     if (eatsEntry != null) {
       showContent();
     }
@@ -127,7 +129,7 @@ public class EatsDetailsFragment extends Fragment implements LoaderManager.Loade
   @Override
   public void onLoadFinished(Loader<EatsDetailsLoader.PlaceAndPicture> loader, EatsDetailsLoader.PlaceAndPicture data) {
     if (data != null) {
-      binding.eatsRating.setRating(data.place.getRating());
+      binding.eatsRating.setRating(data.place.getRating().floatValue());
       showContent();
       revealImage(data);
 

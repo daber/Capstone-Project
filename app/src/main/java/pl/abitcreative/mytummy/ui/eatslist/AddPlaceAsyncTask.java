@@ -6,9 +6,10 @@ import android.os.ConditionVariable;
 
 import androidx.annotation.NonNull;
 
-import com.google.android.gms.location.places.Place;
+
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.libraries.places.api.model.Place;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
