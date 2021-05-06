@@ -1,6 +1,9 @@
 package pl.abitcreative.mytummy;
 
 import android.app.Application;
+
+import com.google.android.libraries.places.api.Places;
+
 import pl.abitcreative.mytummy.dependecy.AppComponent;
 import pl.abitcreative.mytummy.dependecy.AppModule;
 import pl.abitcreative.mytummy.dependecy.DaggerAppComponent;
@@ -18,6 +21,8 @@ public class MyTummyApp extends Application {
 
   @Override
   public void onCreate() {
+
+    Places.initialize(this, BuildConfig.PLACES_API_KEY);
     appComponent = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
     super.onCreate();
   }

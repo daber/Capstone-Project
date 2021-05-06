@@ -64,7 +64,7 @@
     />
     <ImageView android:layout_width="match_parent" android:layout_height="wrap_content"
                android:layout_gravity="end"
-               android:src="@drawable/powered_by_google_light"
+               android:src="@drawable/places_powered_by_google_light"
                android:layout_margin="4dp"
                android:contentDescription="@string/powered_by_google"
 

@@ -5,8 +5,19 @@ import android.graphics.Bitmap;
 
 import androidx.loader.content.AsyncTaskLoader;
 
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.places.*;
+import com.google.android.gms.tasks.Tasks;
+import com.google.android.libraries.places.api.model.PhotoMetadata;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.net.FetchPhotoRequest;
+import com.google.android.libraries.places.api.net.FetchPhotoResponse;
+import com.google.android.libraries.places.api.net.FetchPlaceRequest;
+import com.google.android.libraries.places.api.net.FetchPlaceResponse;
+import com.google.android.libraries.places.api.net.PlacesClient;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+
 import pl.abitcreative.mytummy.model.EatsEntry;
 
 /**
@@ -15,75 +26,71 @@ import pl.abitcreative.mytummy.model.EatsEntry;
 
 public class EatsDetailsLoader extends AsyncTaskLoader<EatsDetailsLoader.PlaceAndPicture> {
 
-  public static class PlaceAndPicture {
-    public  Place                    place;
-    public  Bitmap                   bitmap;
-    private PlacePhotoMetadataBuffer photoBuffer;
-    private PlaceBuffer              placeBuffer;
+    public static class PlaceAndPicture {
+        public Place place;
+        public Bitmap bitmap;
 
-
-    public void release() {
-      photoBuffer.release();
-      placeBuffer.release();
-    }
-  }
-
-  private PlaceAndPicture result;
-
-  private final GoogleApiClient client;
-  private       EatsEntry       eatsEntry;
-
-  public EatsDetailsLoader(Context context, GoogleApiClient client, EatsEntry eatsEntry) {
-    super(context);
-    this.eatsEntry = eatsEntry;
-    this.client = client;
-  }
-
-  @Override
-  protected void onStartLoading() {
-    super.onStartLoading();
-    forceLoad();
-  }
-
-  @Override
-  public PlaceAndPicture loadInBackground() {
-    PlaceBuffer buffer = Places.GeoDataApi.getPlaceById(client, eatsEntry.getPlaceId()).await();
-
-    if (buffer.getCount() > 0) {
-      PlaceAndPicture placeAndPicture = new PlaceAndPicture();
-      Place place = buffer.get(0);
-      Bitmap b = null;
-      PlacePhotoMetadataResult photoResutlt = Places.GeoDataApi.getPlacePhotos(client, eatsEntry.getPlaceId()).await();
-      placeAndPicture.placeBuffer = buffer;
-
-
-      if (photoResutlt.getStatus().isSuccess()) {
-        PlacePhotoMetadataBuffer photoMeta = photoResutlt.getPhotoMetadata();
-        placeAndPicture.photoBuffer = photoMeta;
-        if (photoMeta.getCount() > 0) {
-          PlacePhotoMetadata photo = photoMeta.get(0);
-          b = photo.getPhoto(client).await().getBitmap();
+        public void release() {
+            bitmap.recycle();
         }
+    }
 
-      }
+    private PlaceAndPicture result;
 
-      placeAndPicture.place = place;
-      placeAndPicture.bitmap = b;
-      result = placeAndPicture;
-      return placeAndPicture;
+    private final PlacesClient client;
+    private EatsEntry eatsEntry;
 
+    public EatsDetailsLoader(Context context, PlacesClient client, EatsEntry eatsEntry) {
+        super(context);
+        this.eatsEntry = eatsEntry;
+        this.client = client;
+    }
+
+    @Override
+    protected void onStartLoading() {
+        super.onStartLoading();
+        forceLoad();
+    }
+
+    @Override
+    public PlaceAndPicture loadInBackground() {
+        List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.PHOTO_METADATAS, Place.Field.RATING);
+        FetchPlaceRequest request = FetchPlaceRequest.builder(eatsEntry.getPlaceId(), placeFields).build();
+        PlaceAndPicture pAndP = null;
+        try {
+            FetchPlaceResponse response = Tasks.await(client.fetchPlace(request));
+
+            if (response.getPlace() == null) {
+                return null;
+            }
+            pAndP = new PlaceAndPicture();
+            Place place = response.getPlace();
+            pAndP.place = place;
+            if (place.getPhotoMetadatas().size() > 0) {
+                PhotoMetadata photoMetadata = place.getPhotoMetadatas().get(0);
+
+                FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata).build();
+                FetchPhotoResponse photoResponse = Tasks.await(client.fetchPhoto(photoRequest));
+                Bitmap bitmap = photoResponse.getBitmap();
+
+
+                pAndP.place = place;
+                pAndP.bitmap = bitmap;
+
+            }
+        } catch (ExecutionException | InterruptedException e) {
+            //ignore
+        }
+        return pAndP;
     }
 
 
-    return null;
-  }
-
-  @Override
-  protected void onReset() {
-    super.onReset();
-    if (result != null) {
-      result.release();
-      result = null;
+    @Override
+    protected void onReset() {
+        super.onReset();
+        if (result != null) {
+            result.release();
+            result = null;
+        }
     }
-  }
 }

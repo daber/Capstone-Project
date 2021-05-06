@@ -3,7 +3,9 @@ package pl.abitcreative.mytummy.dependecy;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.places.Places;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.net.PlacesClient;
+
 import dagger.Module;
 import dagger.Provides;
 import pl.abitcreative.mytummy.MyTummyApp;
@@ -34,12 +36,15 @@ public class AppModule {
 
   @Provides
   @AppScope
+  public PlacesClient providePlacesClient(MyTummyApp app) {
+    return Places.createClient(app);
+  }
+  @Provides
+  @AppScope
   public GoogleApiClient provideGoogleApi(GoogleSignInOptions gso) {
     GoogleApiClient client = new GoogleApiClient.Builder(app)
-        .addApi(Places.GEO_DATA_API)
-        .addApi(Places.PLACE_DETECTION_API)
-        .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-        .build();
+            .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+            .build();
     client.connect();
     return client;
   }

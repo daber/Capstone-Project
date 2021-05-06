@@ -43,7 +43,7 @@ public class EatsAdapter extends RecyclerView.Adapter<EatsHolder> {
   public EatsHolder onCreateViewHolder(ViewGroup parent, int viewType) {
     context = parent.getContext();
     LayoutInflater inflater = LayoutInflater.from(context);
-    binding = EatsListItemBinding.inflate(inflater);
+    binding = EatsListItemBinding.inflate(inflater,parent,false);
     selectionColor = new ColorDrawable(context.getResources().getColor(R.color.colorPrimary));
     selectionColor.setAlpha(255 / 2);
     neutralColor = new ColorDrawable(context.getResources().getColor(android.R.color.white));

@@ -1,6 +1,14 @@
 package pl.abitcreative.mytummy.ui.eatslist;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -8,13 +16,21 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlacePicker;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.model.RectangularBounds;
+import com.google.android.libraries.places.api.model.TypeFilter;
+import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
+
+import java.util.Arrays;
+import java.util.List;
 
 import pl.abitcreative.mytummy.BaseActivity;
 import pl.abitcreative.mytummy.R;
@@ -29,6 +45,7 @@ import pl.abitcreative.mytummy.ui.eatsdetails.EatsDetaisActivity;
 
 public class EatsListActivity extends BaseActivity implements GoogleApiClient.OnConnectionFailedListener, EatsListFragment.EatsSelected {
     private static final int RC_PICK_PLACE = 1;
+    private static final int REQ_LOCATION = 2;
 
     private AddPlaceAsyncTask task;
     private boolean isBigScreen = false;
@@ -78,23 +95,51 @@ public class EatsListActivity extends BaseActivity implements GoogleApiClient.On
 
     //  @OnClick(R.id.fab)
     protected void pickPlace() {
+        if (ContextCompat.checkSelfPermission(
+                this, Manifest.permission.ACCESS_COARSE_LOCATION) ==
+                PackageManager.PERMISSION_GRANTED) {
+            // You can use the API that requires the permission.
+            preparePickIntent();
 
-
-        try {
-            Intent intent = new PlacePicker.IntentBuilder()
-                    .build(this);
-            startActivityForResult(intent, RC_PICK_PLACE);
-        } catch (GooglePlayServicesRepairableException e) {
-            e.printStackTrace();
-        } catch (GooglePlayServicesNotAvailableException e) {
-            e.printStackTrace();
+        } else {
+            // You can directly ask for the permission.
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(
+                        new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                        REQ_LOCATION);
+            }
         }
+    }
+
+    @SuppressLint("MissingPermission")
+    private void preparePickIntent() {
+        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        Criteria criteria = new Criteria();
+        criteria.setAccuracy(Criteria.ACCURACY_COARSE);
+        String bestProvider = locationManager.getBestProvider(criteria, true);
+        RectangularBounds bounds = null;
+        if (bestProvider != null) {
+            Location l = locationManager.getLastKnownLocation(bestProvider);
+            double lat = l.getLatitude();
+            double lon = l.getLongitude();
+            // around 6 km
+            double eps = 0.05;
+            LatLngBounds llBounds = LatLngBounds.builder().include(new LatLng(lat - eps, lon - eps)).include(new LatLng(lat + eps, lon + eps)).build();
+            bounds = RectangularBounds.newInstance(llBounds);
+        }
+
+        List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.RATING);
+        Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
+                .setLocationRestriction(bounds)
+                .setTypeFilter(TypeFilter.ESTABLISHMENT)
+                .build(this);
+        startActivityForResult(intent, RC_PICK_PLACE);
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RC_PICK_PLACE) {
             if (resultCode == RESULT_OK) {
-                Place place = PlacePicker.getPlace(data, this);
+                Place place = Autocomplete.getPlaceFromIntent(data);
                 String toastMsg = String.format("Place: %s", place.getName());
                 Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
                 addEntry(place);
@@ -142,6 +187,17 @@ public class EatsListActivity extends BaseActivity implements GoogleApiClient.On
         if (selectedPosition == position) {
             onEatsSelected(-1, null);
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == REQ_LOCATION) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                pickPlace();
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
     }
 
     private void launchDetails(EatsEntry entry) {
