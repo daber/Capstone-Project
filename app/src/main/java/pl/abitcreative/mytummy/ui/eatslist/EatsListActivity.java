@@ -120,12 +120,14 @@ public class EatsListActivity extends BaseActivity implements GoogleApiClient.On
         RectangularBounds bounds = null;
         if (bestProvider != null) {
             Location l = locationManager.getLastKnownLocation(bestProvider);
-            double lat = l.getLatitude();
-            double lon = l.getLongitude();
-            // around 6 km
-            double eps = 0.05;
-            LatLngBounds llBounds = LatLngBounds.builder().include(new LatLng(lat - eps, lon - eps)).include(new LatLng(lat + eps, lon + eps)).build();
-            bounds = RectangularBounds.newInstance(llBounds);
+            if(l != null) {
+                double lat = l.getLatitude();
+                double lon = l.getLongitude();
+                // around 6 km
+                double eps = 0.05;
+                LatLngBounds llBounds = LatLngBounds.builder().include(new LatLng(lat - eps, lon - eps)).include(new LatLng(lat + eps, lon + eps)).build();
+                bounds = RectangularBounds.newInstance(llBounds);
+            }
         }
 
         List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.RATING);
